@@ -11,7 +11,7 @@ const jwt = require('jsonwebtoken')
 
 const authMiddleware = asyncHandler(async(req,res,next)=>{
     let token
-
+    // console.log("req.headers",req)
     if (req?.headers?.authorization?.startsWith('Bearer')){
         token = req.headers.authorization.split(' ')[1];
         try{
@@ -34,13 +34,22 @@ const authMiddleware = asyncHandler(async(req,res,next)=>{
 })
 
 const isAdmin = asyncHandler(async(req,res,next)=>{
-    if (req.user.role === 'admin'){
-        next();
-    }
-    else{
+    const {email} = req.user;
+    const adminUser = await User.findOne({email:email})
+
+    if (adminUser.role !== "admin"){
         throw new Error("You are not authorized to access this route")
     }
+    else{
+        next()
+    }
 })
+
+
+
+
+
+
 
 
 module.exports = {authMiddleware,isAdmin}
