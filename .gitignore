@@ -3,6 +3,7 @@
 
 ### Node ###
 # Logs
+/.trunk
 logs
 *.log
 npm-debug.log*
