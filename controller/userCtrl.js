@@ -162,7 +162,8 @@ const updateUser = asyncHandler(async(req,res)=>{
         {firstname:req?.body?.firstname,
         lastname:req?.body?.lastname,
         mobile:req?.body?.mobile,
-        email:req?.body?.email
+        email:req?.body?.email,
+        
     },
     {
         new:true
@@ -218,7 +219,7 @@ const blockUser = asyncHandler(async(req,res)=>{
         }
         );
         res.status(200).json({
-            "message":"User blocked successfully"
+            message:"User blocked successfully"
         })
 
     }
@@ -226,6 +227,7 @@ const blockUser = asyncHandler(async(req,res)=>{
         throw new Error(error.message)
     }
 })
+
 
 
 module.exports = { 
@@ -238,5 +240,5 @@ module.exports = {
     unBlockUser,
     blockUser,
     handleRefreshToken,
-    logOut
+    logOut,
  }
