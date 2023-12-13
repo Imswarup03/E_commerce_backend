@@ -12,7 +12,9 @@ const dbConnect = async(DATABASE_URI) =>{
         console.log("Mongo DB connected succesfully")
     }
     catch (error){
-        console.log({"error":error});
+        // console.log({"error":error});
+        throw new Error(error)
+
 
     }
 }

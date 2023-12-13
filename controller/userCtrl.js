@@ -7,6 +7,9 @@ const {generateJwtToken} = require('../config/jwtToken')
 const validateMongoDbId = require('../utils/validateMongoDbId')
 const { generateRefreshToken } = require('../config/refreshToken')
 const jwt = require('jsonwebtoken')
+const crypto = require('crypto')
+
+const {sendEmail} = require('./emailCtrl')
 
 // Create User
 const createUser= asyncHandler(async(req,res)=>{
@@ -15,12 +18,11 @@ const createUser= asyncHandler(async(req,res)=>{
 
     if (!findUser){
         // create a new user
-        const newUser= User.create(req.body)
+        const newUser= await User.create(req.body)
         res.status(201).json({
             message:"User created successfully",
             success: true
-        })
-    }
+        })}
     else{
         // console.log(findUser)
         throw new Error('Email id already exists. Use a different email address to signup')
@@ -228,6 +230,61 @@ const blockUser = asyncHandler(async(req,res)=>{
     }
 })
 
+const updatePassword = asyncHandler(async(req,res)=>{
+    const {_id} = req.user;
+    const {password}= req.body;
+
+    validateMongoDbId(_id)
+    const user = await User.findById(_id)
+    if (password){
+        user.password = password
+        console.log("User",user)
+        const updatePassword = await user.save()
+        if (updatePassword){
+            res.json({
+                message:updatePassword,
+            })
+        }
+        }else{
+            res.json({
+                message:"Please provide password",
+            })
+        }
+}
+)
+
+const forgotPasswordToken= asyncHandler(async(req,res)=>{
+     const {email} = req.body;
+     const user = await User.findOne({email:email}).select('-password')
+     if(!user){
+        throw new Error("User not found with this email")
+     }else{
+        try{
+            const userName = user.firstname;
+            const token = await user.createPasswordResetToken()
+            console.log("token",token)
+            await user.save()
+            const resetUrl= `Hi${userName}, Please follow this link to reset your password, This link is valid for 30 minutes from now. <a href="http://localhost:4000/api/user/reset-password/${token}">Click Here</a>`
+            const data = {
+                to : email,
+                text:"Reset your password",
+                subject : "Forgot password link",
+                html: resetUrl
+            }
+            await sendEmail(data)
+            res.status(200).json({
+                message: "Email has been sent to your email address"
+            })
+
+            }catch(error){
+                // throw new Error(error)
+                res.status(500).json({
+                    "message":error.message||"Something went wrong"
+                })
+                
+        }
+     }
+})
 
 
 module.exports = { 
@@ -241,4 +298,6 @@ module.exports = {
     blockUser,
     handleRefreshToken,
     logOut,
+    updatePassword,
+    forgotPasswordToken
  }
