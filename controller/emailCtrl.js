@@ -3,10 +3,6 @@ const asyncHandler = require('express-async-handler')
 const dotenv= require('dotenv')
 dotenv.config()
 
-console.log("process.env.EMAIL_HOST",typeof(process.env.EMAIL_HOST))
-console.log("process.env.EMAIL_PORT",typeof(process.env.EMAIL_PORT))
-console.log("process.env.EMAIL_PASSWORD",process.env.EMAIL_PASSWORD)
-console.log("process.env.EMAIL_FROM",process.env.EMAIL_USER)
 
 
 const sendEmail = asyncHandler(async(data,req,res,) => {
@@ -24,15 +20,14 @@ const sendEmail = asyncHandler(async(data,req,res,) => {
     let info = await transporter.sendMail({
         from: process.env.EMAIL_FROM,
         to:data.to,
-        subject: data.subject,
         text: data.text,
+        subject: data.subject,
         html: data.html
     
     })
     console.log("Message Sent:%s",info.messageId);
     console.log("Preview URL:%s",nodemailer.getTestMessageUrl(info));
     // return true
-
 
 })
 

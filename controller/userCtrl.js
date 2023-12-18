@@ -273,7 +273,8 @@ const forgotPasswordToken= asyncHandler(async(req,res)=>{
             }
             await sendEmail(data)
             res.status(200).json({
-                message: "Email has been sent to your email address"
+                message: "Email has been sent to your email address",
+                token:token
             })
 
             }catch(error){
@@ -284,6 +285,30 @@ const forgotPasswordToken= asyncHandler(async(req,res)=>{
                 
         }
      }
+})
+
+const resetPassword = asyncHandler(async(req,res)=>{
+    const {password,confirmPassword} =req.body
+    if (password !== confirmPassword){
+        console.log("===========================")
+        throw new Error("Password does not match")
+    }
+    const {token} = req.params
+    
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex")
+    console.log("hashedToken====",hashedToken)
+    const user = await User.findOne({passwordResetToken:hashedToken,
+    passwordResetExpires:{$gt:Date.now()}})
+    if (!user){
+        throw new Error("Token is invalid or has expired.Please try again")
+    }
+    user.password = password
+    user.passwordResetToken = undefined
+    user.passwordResetExpires = undefined
+    await user.save()
+    res.json({
+        user
+    })
 })
 
 
@@ -299,5 +324,9 @@ module.exports = {
     handleRefreshToken,
     logOut,
     updatePassword,
-    forgotPasswordToken
+    forgotPasswordToken,
+    resetPassword
  }
+
+
+ 
