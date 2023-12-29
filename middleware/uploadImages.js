@@ -32,21 +32,7 @@ const uploadPhoto = multer({
 
 })
 
-// const productImgResize = async(req,res,next)=>{
-//     if(!req.files) return next()
-//     // await Promise.all(
 
-//     for (const file of req.files) {
-//             await sharp(file.path)
-//             .resize(300,300)
-//             .toFormat('jpeg')
-//             .jpeg({quality:90})
-//             .toFile(`public/temp/products/${file.filename}`)
-//         fs.unlinkSync(`public/temp/products/${file.filename}`);
-//         }
-//         ;
-//         next()
-// }
 
 const productImgResize = async (req, res, next) => {
     if (!req.files || req.files.length === 0) {
@@ -60,7 +46,7 @@ const productImgResize = async (req, res, next) => {
                 .toFormat('jpeg')
                 .jpeg({ quality: 90 })
                 .toFile(`public/temp/products/${file.filename}`);
-            fs.unlinkSync(file.path);
+            fs.unlinkSync(`public/temp/products/${file.filename}`);
             // Delete the original file after processing
             
         }
