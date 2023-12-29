@@ -37,39 +37,43 @@ const uploadPhoto = multer({
 
 const productImgResize = async(req,res,next)=>{
     if(!req.files) return next()
-    await Promise.all(
-        req.files.map(async(file)=>{
-            await sharp(file.path)
+    try{
+    for (const file of req.files){
+            sharp(file.path)
             .resize(300,300)
             .toFormat('jpeg')
             .jpeg({quality:90})
             .toFile(`public/temp/products/${file.filename}`)
-        fs.unlink(`public/temp/products/${file.filename}`);
-        })
-        );
-        next()
-}
-
-const blogImgResize = async(req,res,next)=>{
-    if(!req.files) return next()
-    await Promise.all(
-        req.files.map(async(file)=>{
-            sharp(file.path)
-                .resize(300, 300)
-                .toFormat('jpeg')
-                .jpeg({ quality: 90 })
-                .toFile(`public/temp/products/${file.filename}`);
-            fs.unlinkSync(file.path);
-            // Delete the original file after processing
-            
+        fs.unlinkSync(`public/temp/products/${file.filename}`);
         }
-        next();
-    } catch (err) {
+        next()
+      } catch (err) {
         // Handle errors
         console.error('Error occurred during image processing:', err);
         next(err); // Pass the error to Express error handling middleware
     }
 };
+
+// const blogImgResize = async(req,res,next)=>{
+//     if(!req.files) return next()
+//     await Promise.all(
+//         req.files.map(async(file)=>{
+//             sharp(file.path)
+//                 .resize(300, 300)
+//                 .toFormat('jpeg')
+//                 .jpeg({ quality: 90 })
+//                 .toFile(`public/temp/products/${file.filename}`);
+//             fs.unlinkSync(file.path);
+//             // Delete the original file after processing
+            
+//         }
+//         next();
+//     } catch (err) {
+//         // Handle errors
+//         console.error('Error occurred during image processing:', err);
+//         next(err); // Pass the error to Express error handling middleware
+//     }
+// };
 
 const blogImgResize = async(req,res,next)=>{
     if(!req.files) return next()
