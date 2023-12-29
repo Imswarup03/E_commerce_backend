@@ -10,6 +10,12 @@ const morgan = require('morgan')
 
 const authRouter= require('./routes/authRoutes');
 const productRouter= require('./routes/productRoute');
+const blogRouter= require('./routes/blogRoute');
+const productCategoryRouter = require('./routes/productCategoryRoute');
+const blogCategoryRouter= require('./routes/blogCategoryRoute')
+const brandRouter = require('./routes/brandRoute')
+
+const couponRoute = require('./routes/couponRoute')
 
 
 dbConnect(process.env.DATABASE_URI)
@@ -26,7 +32,11 @@ app.use(cookieParser());
 
 app.use('/api/user',authRouter);
 app.use('/api/product',productRouter);
-
+app.use('/api/blog',blogRouter);
+app.use('/api/category',productCategoryRouter);
+app.use('/api/blog-category',blogCategoryRouter);
+app.use('/api/brand',brandRouter)
+app.use('/api/coupon',couponRoute)
 
 app.use(notFound)
 

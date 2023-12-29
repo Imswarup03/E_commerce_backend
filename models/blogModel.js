@@ -27,19 +27,21 @@ var blogSchema = new mongoose.Schema({
         type:Boolean,
         default:false
     },
-    Likes:[
+    likes:[
         {
-        type:mongoose.Schema.Types.ObjectId
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'User'
     }
     ],
     disLikes:[
         {
-            type:mongoose.Schema.Types.ObjectId
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'User'
         }
     ],
     image:{
         type:String,
-        defalut:null
+        default:null
     },
     author:{
         type:String,

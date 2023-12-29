@@ -14,8 +14,13 @@ const {sendEmail} = require('./emailCtrl')
 // Create User
 const createUser= asyncHandler(async(req,res)=>{
     const email= req.body.email;
+    const password= req.body.password;
+    const confirmPassword= req.body.confirmPassword
+    if (password!==confirmPassword){
+        throw new Error('Passwords do not match')
+    }
     const findUser= await User.findOne({"email":email})
-
+    
     if (!findUser){
         // create a new user
         const newUser= await User.create(req.body)
@@ -49,7 +54,7 @@ const loginUser = asyncHandler(async(req,res)=>{
             lastname:findUser?.lastname,
             email:findUser?.email,
             mobile:findUser?.mobile,
-            token:generateJwtToken(findUser?._id),
+            token:generateJwtToken(findUser?._id)
 
         })
     }else{
