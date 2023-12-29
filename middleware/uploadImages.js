@@ -35,20 +35,21 @@ const uploadPhoto = multer({
 
 })
 
-const productImgResize = async(req,res,next)=>{
-    if(!req.files) return next()
-    await Promise.all(
-        req.files.map(async(file)=>{
-            await sharp(file.path)
-            .resize(300,300)
-            .toFormat('jpeg')
-            .jpeg({quality:90})
-            .toFile(`D://public//temp//products//${file.filename}`)
-        fs.unlinkSync(`D://public//temp//products//${file.filename}`);
-        })
-        );
-        next()
-}
+// const productImgResize = async(req,res,next)=>{
+//     if(!req.files) return next()
+//     // await Promise.all(
+
+//     for (const file of req.files) {
+//             await sharp(file.path)
+//             .resize(300,300)
+//             .toFormat('jpeg')
+//             .jpeg({quality:90})
+//             .toFile(`public/temp/products/${file.filename}`)
+//         fs.unlinkSync(`public/temp/products/${file.filename}`);
+//         }
+//         ;
+//         next()
+// }
 
 const blogImgResize = async(req,res,next)=>{
     if(!req.files) return next()
@@ -58,12 +59,11 @@ const blogImgResize = async(req,res,next)=>{
             .resize(300,300)
             .toFormat('jpeg')
             .jpeg({quality:90})
-            .toFile(`C://public//temp//blogs//${file.filename}`)
-        fs.unlinkSync(`C://public//temp//blogs//${file.filename}`);
+            .toFile(`public/temp/blogs/${file.filename}`)
+        // fs.unlinkSync(`public/temp/blogs/${file.filename}`);
         })
-        );
+                );
         next()
-
 }
 
-module.exports ={ uploadPhoto, productImgResize,blogImgResize};
+module.exports ={ uploadPhoto,};

@@ -2,7 +2,7 @@ const express = require('express')
 
 const router = express.Router()
 
-const {uploadPhoto, productImgResize,blogImgResize} = require('../middleware/uploadImages')
+const {uploadPhoto, productImgResize} = require('../middleware/uploadImages')
     
 const {createProduct,
     getAproduct,
@@ -24,7 +24,7 @@ router.put('/wishlist',authMiddleware,addToWishList)
 
 router.put('/ratings',authMiddleware,ratings)
 
-router.put('/upload/:id',authMiddleware,isAdmin,uploadPhoto.array('images',10),productImgResize,uploadImages)
+router.put('/upload/:id',authMiddleware,isAdmin,uploadPhoto.array('images',10),uploadImages)
 
 
 module.exports= router
