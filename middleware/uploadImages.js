@@ -35,23 +35,7 @@ const uploadPhoto = multer({
 
 })
 
-// const productImgResize = async(req,res,next)=>{
-//     if(!req.files) return next()
-//     // await Promise.all(
-
-//     for (const file of req.files) {
-//             await sharp(file.path)
-//             .resize(300,300)
-//             .toFormat('jpeg')
-//             .jpeg({quality:90})
-//             .toFile(`public/temp/products/${file.filename}`)
-//         fs.unlinkSync(`public/temp/products/${file.filename}`);
-//         }
-//         ;
-//         next()
-// }
-
-const blogImgResize = async(req,res,next)=>{
+const productImgResize = async(req,res,next)=>{
     if(!req.files) return next()
     await Promise.all(
         req.files.map(async(file)=>{
@@ -59,11 +43,26 @@ const blogImgResize = async(req,res,next)=>{
             .resize(300,300)
             .toFormat('jpeg')
             .jpeg({quality:90})
+            .toFile(`public/temp/products/${file.filename}`)
+        fs.unlink(`public/temp/products/${file.filename}`);
+        })
+        );
+        next()
+}
+
+const blogImgResize = async(req,res,next)=>{
+    if(!req.files) return next()
+    await Promise.all(
+        req.files.map(async(file)=>{
+            sharp(file.path)
+            .resize(300,300)
+            .toFormat('jpeg')
+            .jpeg({quality:90})
             .toFile(`public/temp/blogs/${file.filename}`)
-        // fs.unlinkSync(`public/temp/blogs/${file.filename}`);
+        fs.unlink(`public/temp/blogs/${file.filename}`);
         })
                 );
         next()
 }
 
-module.exports ={ uploadPhoto,};
+module.exports ={ uploadPhoto,productImgResize,blogImgResize};
