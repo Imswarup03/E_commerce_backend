@@ -1,17 +1,19 @@
-const multer = require('multer')
-const sharp = require('sharp')
-const path = require('path')
-const fs = require('fs')
+const multer = require("multer");
+const sharp = require("sharp");
+const path = require("path");
+const fs = require("fs");
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join( "D://public//temp"));
+  },
+  filename: function (req, file, cb) {
+    const uniquesuffix = Date.now() + "-" + Math.round(Math.random()* 1E9);
+    cb(null, file.fieldname + "-" + uniquesuffix + ".jpeg");
+  },
+});
 
-const multerStorage = multer.diskStorage({
-    destination:function(req,res,cb){
-        cb(null,path.join("./public/temp"))
-    },
-    filename:function(req,file,cb){
-        const uniqueSuffix = Date.now()+'-'+Math.random()*1E9
-        cb(null,file.fieldname+ '-'+uniqueSuffix+".jpeg");
-    },
-})
+
+
 
 const multerFilter = (req,file,cb)=>{
     if(file.mimetype.startsWith('image')){
@@ -25,8 +27,9 @@ const multerFilter = (req,file,cb)=>{
 }
 
 
+
 const uploadPhoto = multer({
-    storage:multerStorage,
+    storage: storage,
     fileFilter:multerFilter,
     limits:{fieldSize:2000000}
 
@@ -40,8 +43,8 @@ const productImgResize = async(req,res,next)=>{
             .resize(300,300)
             .toFormat('jpeg')
             .jpeg({quality:90})
-            .toFile(`public/temp/products/${file.filename}`)
-        fs.unlinkSync(`public/temp/products/${file.filename}`);
+            .toFile(`D://public//temp//products//${file.filename}`)
+        fs.unlinkSync(`D://public//temp//products//${file.filename}`);
         })
         );
         next()
@@ -55,11 +58,12 @@ const blogImgResize = async(req,res,next)=>{
             .resize(300,300)
             .toFormat('jpeg')
             .jpeg({quality:90})
-            .toFile(`public/temp/blogs/${file.filename}`)
-        // fs.unlinkSync(`public/temp/blogs/${file.filename}`);
+            .toFile(`C://public//temp//blogs//${file.filename}`)
+        fs.unlinkSync(`C://public//temp//blogs//${file.filename}`);
         })
-                );
+        );
         next()
+
 }
 
 module.exports ={ uploadPhoto, productImgResize,blogImgResize};

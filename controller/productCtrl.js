@@ -239,7 +239,7 @@ const uploadImages = asyncHandler(async(req,res)=>{
     const {id} = req.params
     validateMongoDbId(id)
     try{
-        const uploader= async (path)=>  cloudinaryUploading(path,'images');
+        const uploader= (path)=>  cloudinaryUploading(path,'images');
         const urls =[];
         var files = req.files;
         for (const file of files){
