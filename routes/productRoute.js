@@ -24,7 +24,7 @@ router.put('/wishlist',authMiddleware,addToWishList)
 
 router.put('/ratings',authMiddleware,ratings)
 
-router.put('/upload/:id',authMiddleware,isAdmin,uploadPhoto.array('images',10),uploadImages)
+router.put('/upload/:id',authMiddleware,isAdmin,uploadPhoto.array('images',10),productImgResize,uploadImages)
 
 
 module.exports= router
