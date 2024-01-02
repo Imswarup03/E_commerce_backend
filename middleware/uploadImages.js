@@ -2,13 +2,9 @@ const multer = require("multer");
 const sharp = require("sharp");
 const path = require("path");
 const fs = require("fs");
-
-
-
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    console.log(req.url)
-    cb(null, path.join( __dirname,"../public/temp"));
+    cb(null, path.join( "D://public//temp"));
   },
   filename: function (req, file, cb) {
     const uniquesuffix = Date.now() + "-" + Math.round(Math.random()* 1E9);
@@ -31,55 +27,72 @@ const multerFilter = (req,file,cb)=>{
 }
 
 
-
 const uploadPhoto = multer({
     storage: storage,
-    fileFilter: multerFilter,
+    fileFilter:multerFilter,
     limits:{fieldSize:2000000}
 
 })
 // console.log(uploadPhoto)
 
 
-const productImgResize = async (req,res,next)=>{
-  if(!req.files) return next()
-  try{
-      for(const file of req.files){
-        console.log(file)
-          await sharp(file.path)
+const productImgResize = async(req,res,next)=>{
+    if(!req.files) return next()
+    try{
+    for (const file of req.files){
+            sharp(file.path)
             .resize(300,300)
             .toFormat('jpeg')
             .jpeg({quality:90})
             .toFile(`public/temp/products/${file.filename}`)
-            fs.unlinkSync(`public/temp/products/${file.filename}`)
-      }
-  
-    console.log("process done")
-    next()
-        }catch (err) {
-      console.error('Error occurred during image processing:', err);
-      next(err); 
-}
+        fs.unlinkSync(`public/temp/products/${file.filename}`);
+        }
+        next()
+      } catch (err) {
+        // Handle errors
+        console.error('Error occurred during image processing:', err);
+        next(err); // Pass the error to Express error handling middleware
+    }
 };
 
-const blogImgResize = async (req, res, next) => {
-  if (!req.files) return next();
-  try {
-    for (const file of req.files) {
-      await sharp(file.path)
-        .resize(300, 300)
-        .toFormat('jpeg')
-        .jpeg({ quality: 90 })
-        .toFile(`public/temp/blogs/${file.filename}`);
-      // console.log(file.path)
-      fs.unlinkSync(`public/temp/blogs/${file.filename}`);
+// const blogImgResize = async(req,res,next)=>{
+//     if(!req.files) return next()
+//     await Promise.all(
+//         req.files.map(async(file)=>{
+//             sharp(file.path)
+//                 .resize(300, 300)
+//                 .toFormat('jpeg')
+//                 .jpeg({ quality: 90 })
+//                 .toFile(`public/temp/products/${file.filename}`);
+//             fs.unlinkSync(file.path);
+//             // Delete the original file after processing
+            
+//         }
+//         next();
+//     } catch (err) {
+//         // Handle errors
+//         console.error('Error occurred during image processing:', err);
+//         next(err); // Pass the error to Express error handling middleware
+//     }
+// };
+
+const blogImgResize = async(req,res,next)=>{
+    if(!req.files) return next()
+    try{
+    for (const file of req.files){
+            sharp(file.path)
+            .resize(300,300)
+            .toFormat('jpeg')
+            .jpeg({quality:90})
+            .toFile(`public/temp/blogs/${file.filename}`)
+        fs.unlinkSync(`public/temp/blogs/${file.filename}`);
+        }
+        next()
+      } catch (err) {
+        // Handle errors
+        console.error('Error occurred during image processing:', err);
+        next(err); // Pass the error to Express error handling middleware
     }
-    next();
-  } catch (err) {
-    // Handle errors
-    console.error('Error occurred during image processing:', err);
-    next(err);
-  }
 };
 
 
