@@ -8,6 +8,7 @@ const {notFound,errorHandler} = require('./middleware/errorHandler')
 const cookieParser = require('cookie-parser')
 const morgan = require('morgan')
 
+
 const authRouter= require('./routes/authRoutes');
 const productRouter= require('./routes/productRoute');
 const blogRouter= require('./routes/blogRoute');

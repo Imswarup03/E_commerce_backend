@@ -2,7 +2,7 @@ const express = require('express')
 
 const router = express.Router()
 
-const {uploadPhoto, productImgResize} = require('../middleware/uploadImages')
+const {uploadPhoto,productImgResize} = require('../middleware/uploadImages')
     
 const {createProduct,
     getAproduct,
@@ -11,7 +11,8 @@ const {createProduct,
     deleteProduct,
     addToWishList,
     ratings,
-    uploadImages
+    uploadImages,
+    
     }= require('../controller/productCtrl')
 const { isAdmin ,authMiddleware} = require('../middleware/authMiddleware')
 router.post('/create-product',authMiddleware,isAdmin,createProduct)
