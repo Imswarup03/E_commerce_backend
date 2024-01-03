@@ -6,8 +6,7 @@ const User = require('../models/userModel')
 const validateMongoDbId = require('../utils/validateMongoDbId')
 const { cloudinaryUploading } = require('../utils/cloudinary')
 const fs = require("fs")
-const sharp= require('sharp')
-// const path = require('path')
+const path = require('path')
 
 
 
@@ -238,43 +237,19 @@ const ratings = asyncHandler(async(req,res)=>{
 })
 
 
-const uploadFiles = async (files, uploader) => {
-    const urls = [];
-  
-    for(const file of files) {
-      try {  
-        const url = await uploadFile(file, uploader);
-        urls.push(url);
-      } catch (err) {
-        console.error('Error uploading file', err);
-      }
-    }
-  
-    return urls;
-  }
-
-  const uploadFile = async (file, uploader) => {
-    const path = file.path;
-    const url = await uploader(path);
-    fs.unlinkSync(path);
-    return url;
-  }
-
-
 
 const uploadImages = asyncHandler(async(req,res)=>{
-    const {id} = req.params
-    validateMongoDbId(id)
     try{
-        const uploader= (path)=>  cloudinaryUploading(path,'images');
-        const urls =[];
-        const files = req.files;
+        const {id}= req.params
+        validateMongoDbId(id)
+        const uploader = (path)=>cloudinaryUploading(path,"images")
+        const urls = []
+        const files = req.files
         for (const file of files){
-            const { path }=file;
-            const newPath= await uploader(path);
-            urls.push(newPath);
-            console.log(file)
-            fs.unlinkSync(path)
+            const {path} = file;
+            const newpath = await uploader(path)
+            urls.push(newpath)
+            fs.unlinkSync(path);
         }
         const findProduct = await Product.findByIdAndUpdate(id,
             {images:urls.map((file)=>{
@@ -282,15 +257,12 @@ const uploadImages = asyncHandler(async(req,res)=>{
             })},
             {new: true}
             )
+            res.json(findProduct)
         
-        res.json(findProduct)
-
-    
     }catch(error){
-        throw new Error(error)
+        throw new Error(error.message)
     }
 })
-
 
 
 
@@ -305,4 +277,3 @@ module.exports = {
     uploadImages,
     
 }
-

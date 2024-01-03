@@ -11,8 +11,7 @@ const {createProduct,
     deleteProduct,
     addToWishList,
     ratings,
-    uploadImages,
-    
+    uploadImages
     }= require('../controller/productCtrl')
 const { isAdmin ,authMiddleware} = require('../middleware/authMiddleware')
 router.post('/create-product',authMiddleware,isAdmin,createProduct)
