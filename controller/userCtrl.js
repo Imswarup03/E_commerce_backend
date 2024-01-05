@@ -8,7 +8,8 @@ const validateMongoDbId = require('../utils/validateMongoDbId')
 const { generateRefreshToken } = require('../config/refreshToken')
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto')
-
+const Cart = require('../models/cartModel')
+const Product = require('../models/productModel')
 const {sendEmail} = require('./emailCtrl')
 
 // Create User
@@ -352,7 +353,7 @@ const getWishList = asyncHandler(async(req,res)=>{
     
     try{
         const {_id} = req?.user
-        const findUser = await User.findById(_id);
+        const findUser = await User.findById(_id).populate("wishlist");
         res.json(findUser)
 
     }catch(error){
@@ -360,6 +361,58 @@ const getWishList = asyncHandler(async(req,res)=>{
     }
 })
 
+const saveAddress =asyncHandler(async(req,res,next)=>{
+    const {id}= req.user
+    validateMongoDbId(id)
+    try{
+        const user = await User.findByIdAndUpdate({"_id":id},
+        {
+            address:req?.body?.address
+        },
+    {
+        new:true
+    }
+    )
+        res.status(200).json({
+            message:"Address updated successfully",
+        })
+    }catch(error){
+        res.status(400).json({
+            message:error.message
+        })
+    }
+})
+
+
+const userCart = asyncHandler(async(req,res)=>{
+    const {cart} = req.body;
+    const {_id}= req.user ;
+    validateMongoDbId(_id)
+    
+    try{
+        let products=[]
+        const user = await User.findById({_id:_id})
+        // check cart is already exist
+        const alreadyExistCart = await Cart.findOne({orderBy:user._id})
+        if (alreadyExistCart){
+            alreadyExistCart.remove();
+        }
+        for (let i =0; i< cart.length;i++){
+            let object = {}
+            object.product= cart[i]._id;
+            object.count=cart[i].count
+            object.color= cart[i].color
+            let getPrice = await Product.findById(cart[i]._id)
+                                        .select("price").exec();
+            object.price = getPrice.price;
+            products.push(object);
+
+        console.log(products)
+        }
+    }catch(error){
+        throw new Error(error.message)
+    }
+})
 
 
 module.exports = { 
@@ -377,7 +430,9 @@ module.exports = {
     forgotPasswordToken,
     resetPassword,
     loginAdmin,
-    getWishList
+    getWishList,
+    saveAddress,
+    userCart
  }
 
 

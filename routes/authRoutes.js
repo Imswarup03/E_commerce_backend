@@ -6,7 +6,8 @@ const router= express.Router()
 
 const {createUser,loginUser,getAllUsers,getUser,deleteUser,updateUser,blockUser,unBlockUser, handleRefreshToken,logOut,updatePassword,forgotPasswordToken,
 resetPassword,loginAdmin,
-getWishList
+getWishList,saveAddress,
+userCart
 }= require('../controller/userCtrl')
 
 router.post('/register',createUser);
@@ -39,6 +40,9 @@ router.post('/forgot-password',forgotPasswordToken)
 
 router.put('/reset-password/:token',resetPassword)
 
+router.put('/update-address',authMiddleware,saveAddress)
+
+router.put ('/cart',authMiddleware,userCart)
 
 
 module.exports= router
