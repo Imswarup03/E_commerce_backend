@@ -3,7 +3,6 @@
 
 ### Node ###
 # Logs
-/.trunk
 logs
 *.log
 npm-debug.log*
@@ -44,7 +43,7 @@ bower_components
 build/Release
 
 # Dependency directories
-node_modules/
+/node_modules/
 jspm_packages/
 
 # Snowpack dependency directory (https://snowpack.dev/)
@@ -78,12 +77,11 @@ web_modules/
 .yarn-integrity
 
 # dotenv environment variable files
-
+.env
 .env.development.local
 .env.test.local
 .env.production.local
 .env.local
-.env
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
