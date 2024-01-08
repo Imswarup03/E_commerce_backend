@@ -7,7 +7,13 @@ const router= express.Router()
 const {createUser,loginUser,getAllUsers,getUser,deleteUser,updateUser,blockUser,unBlockUser, handleRefreshToken,logOut,updatePassword,forgotPasswordToken,
 resetPassword,loginAdmin,
 getWishList,saveAddress,
-userCart
+userCart,
+getUserCart,
+emptyCart,
+applyCoupon,
+createOrder,
+getOrders,
+updateOrderStatus
 }= require('../controller/userCtrl')
 
 router.post('/register',createUser);
@@ -43,6 +49,16 @@ router.put('/reset-password/:token',resetPassword)
 router.put('/update-address',authMiddleware,saveAddress)
 
 router.put ('/cart',authMiddleware,userCart)
+
+router.get('/cart/get-cart',authMiddleware,getUserCart)
+
+router.get('/cart/empty-cart',authMiddleware,emptyCart)
+
+router.post('/cart/cash-order',authMiddleware,createOrder)
+router.put('/cart/apply-coupon',authMiddleware,applyCoupon)
+router.get('/cart/get-orders',authMiddleware,getOrders)
+router.put('/order/update-order/:id',authMiddleware,isAdmin,updateOrderStatus)
+
 
 
 module.exports= router
