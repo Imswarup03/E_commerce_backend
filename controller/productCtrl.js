@@ -247,9 +247,11 @@ const uploadImages = asyncHandler(async(req,res)=>{
         const files = req.files
         for (const file of files){
             const {path} = file;
-            const newpath = await uploader(path)
-            urls.push(newpath)
-            fs.unlinkSync(path);
+            const newPath =  await uploader(path)
+            // console.log("console======>",newPath)
+            urls.push(newPath)
+            console.log("urlsss",urls)
+            // fs.unlinkSync(path);
         }
         const findProduct = await Product.findByIdAndUpdate(id,
             {images:urls.map((file)=>{
@@ -257,6 +259,7 @@ const uploadImages = asyncHandler(async(req,res)=>{
             })},
             {new: true}
             )
+            console.log(findProduct)
             res.json(findProduct)
         
     }catch(error){
